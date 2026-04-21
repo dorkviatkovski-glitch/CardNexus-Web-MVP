@@ -1,0 +1,1 @@
+export interface Card { id: string; name: string; set: string; value: number; status: 'pending' | 'identified' | 'failed' }

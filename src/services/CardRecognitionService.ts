@@ -1,0 +1,1 @@
+export class CardRecognitionService { async identify(url: string) { console.log('Processing...'); return { name: 'Unknown', set: 'TBD' }; } }
