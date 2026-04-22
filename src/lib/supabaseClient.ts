@@ -1,6 +1,16 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+function readRequiredEnv(name: 'NEXT_PUBLIC_SUPABASE_URL' | 'NEXT_PUBLIC_SUPABASE_ANON_KEY'): string {
+  const value = process.env[name];
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+  if (!value) {
+    throw new Error(`Missing required environment variable: ${name}`);
+  }
+
+  return value;
+}
+
+export const supabase = createClient(
+  readRequiredEnv('NEXT_PUBLIC_SUPABASE_URL'),
+  readRequiredEnv('NEXT_PUBLIC_SUPABASE_ANON_KEY'),
+);
