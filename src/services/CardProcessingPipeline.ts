@@ -1,1 +1,0 @@
-export class CardProcessingPipeline { constructor(private recognition: any) {} async run(id: string, url: string) { return await this.recognition.identify(url); } }
