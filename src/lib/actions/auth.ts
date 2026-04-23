@@ -40,6 +40,25 @@ export async function signup(formData: FormData) {
   redirect('/collection');
 }
 
+export async function signInWithGoogle() {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: process.env.NEXT_PUBLIC_REDIRECT_URL || 'https://cardnexus-web-mvp.vercel.app/auth/callback',
+    },
+  });
+
+  if (error) {
+    redirect('/login?error=' + encodeURIComponent(error.message));
+  }
+
+  if (data.url) {
+    redirect(data.url);
+  }
+}
+
 export async function logout() {
   const supabase = await createClient();
   await supabase.auth.signOut();
