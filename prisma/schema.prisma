@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String   @id @default(uuid())
+  email       String   @unique
+  profile     Profile?
+  collections Collection[]
+  listings    Listing[]
+  sharedWith  SharedCollectionMember[]
+  createdAt   DateTime @default(now())
+}
+
+model Profile {
+  id        String  @id @default(uuid())
+  userId    String  @unique
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  username  String?
+  avatarUrl String?
+}
+
+model Collection {
+  id            String                   @id @default(uuid())
+  name          String
+  ownerId       String
+  owner         User                     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  items         CollectionItem[]
+  sharedMembers SharedCollectionMember[]
+  createdAt     DateTime                 @default(now())
+}
+
+model CollectionItem {
+  id            String       @id @default(uuid())
+  collectionId  String
+  collection    Collection   @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  cardName      String
+  cardSet       String
+  cardNumber    String?
+  rarity        String?
+  condition     String?
+  purchasePrice Float?
+  imageUrl      String?
+  pricePoints   PricePoint[]
+  listing       Listing?
+  createdAt     DateTime     @default(now())
+}
+
+model PricePoint {
+  id         String         @id @default(uuid())
+  itemId     String
+  item       CollectionItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  value      Float
+  provider   String         @default("mock")
+  recordedAt DateTime       @default(now())
+}
+
+model SharedCollectionMember {
+  id           String     @id @default(uuid())
+  collectionId String
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  userId       String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role         String
+  createdAt    DateTime   @default(now())
+
+  @@unique([collectionId, userId])
+}
+
+model Listing {
+  id          String         @id @default(uuid())
+  itemId      String         @unique
+  item        CollectionItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  sellerId    String
+  seller      User           @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  askingPrice Float
+  status      String         @default("active")
+  createdAt   DateTime       @default(now())
+}
