@@ -7,78 +7,68 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id          String   @id @default(uuid())
-  email       String   @unique
-  profile     Profile?
-  collections Collection[]
-  listings    Listing[]
-  sharedWith  SharedCollectionMember[]
-  createdAt   DateTime @default(now())
-}
-
 model Profile {
-  id        String  @id @default(uuid())
-  userId    String  @unique
-  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  username  String?
-  avatarUrl String?
+  id         String   @id @default(dbgenerated("gen_random_uuid()"))
+  user_id    String   @unique
+  username   String?
+  avatar_url String?
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+
+  @@map("Profile")
 }
 
 model Collection {
-  id            String                   @id @default(uuid())
-  name          String
-  ownerId       String
-  owner         User                     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  items         CollectionItem[]
-  sharedMembers SharedCollectionMember[]
-  createdAt     DateTime                 @default(now())
+  id         String   @id @default(dbgenerated("gen_random_uuid()"))
+  name       String
+  owner_id   String
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+
+  @@map("Collection")
 }
 
 model CollectionItem {
-  id            String       @id @default(uuid())
-  collectionId  String
-  collection    Collection   @relation(fields: [collectionId], references: [id], onDelete: Cascade)
-  cardName      String
-  cardSet       String
-  cardNumber    String?
-  rarity        String?
-  condition     String?
-  purchasePrice Float?
-  imageUrl      String?
-  pricePoints   PricePoint[]
-  listing       Listing?
-  createdAt     DateTime     @default(now())
+  id             String   @id @default(dbgenerated("gen_random_uuid()"))
+  collection_id  String
+  card_name      String
+  card_set       String
+  card_number    String?
+  rarity         String?
+  condition      String?
+  purchase_price Decimal? @db.Decimal(10, 2)
+  image_url      String?
+  created_at     DateTime @default(now()) @db.Timestamptz(6)
+
+  @@map("CollectionItem")
 }
 
 model PricePoint {
-  id         String         @id @default(uuid())
-  itemId     String
-  item       CollectionItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
-  value      Float
-  provider   String         @default("mock")
-  recordedAt DateTime       @default(now())
+  id          String   @id @default(dbgenerated("gen_random_uuid()"))
+  item_id     String
+  value       Decimal  @db.Decimal(10, 2)
+  provider    String   @default("mock")
+  recorded_at DateTime @default(now()) @db.Timestamptz(6)
+
+  @@map("PricePoint")
 }
 
 model SharedCollectionMember {
-  id           String     @id @default(uuid())
-  collectionId String
-  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
-  userId       String
-  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  role         String
-  createdAt    DateTime   @default(now())
+  id            String   @id @default(dbgenerated("gen_random_uuid()"))
+  collection_id String
+  user_id       String
+  role          String
+  created_at    DateTime @default(now()) @db.Timestamptz(6)
 
-  @@unique([collectionId, userId])
+  @@unique([collection_id, user_id])
+  @@map("SharedCollectionMember")
 }
 
 model Listing {
-  id          String         @id @default(uuid())
-  itemId      String         @unique
-  item        CollectionItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
-  sellerId    String
-  seller      User           @relation(fields: [sellerId], references: [id], onDelete: Cascade)
-  askingPrice Float
-  status      String         @default("active")
-  createdAt   DateTime       @default(now())
+  id           String   @id @default(dbgenerated("gen_random_uuid()"))
+  item_id      String   @unique
+  seller_id    String
+  asking_price Decimal  @db.Decimal(10, 2)
+  status       String   @default("active")
+  created_at   DateTime @default(now()) @db.Timestamptz(6)
+
+  @@map("Listing")
 }
