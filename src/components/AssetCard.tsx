@@ -1,17 +1,19 @@
 'use client';
 
-import { TrendingUp, TrendingDown } from 'lucide-react';
+import { TrendingUp, TrendingDown, Tag } from 'lucide-react';
 
 interface AssetCardProps {
+  id: string;
   name: string;
   set: string;
   condition?: string;
   value: number;
   change: number;
   imageUrl?: string;
+  onSellClick?: (id: string) => void;
 }
 
-export default function AssetCard({ name, set, condition, value, change, imageUrl }: AssetCardProps) {
+export default function AssetCard({ id, name, set, condition, value, change, imageUrl, onSellClick }: AssetCardProps) {
   const isPositive = change >= 0;
 
   return (
@@ -34,6 +36,15 @@ export default function AssetCard({ name, set, condition, value, change, imageUr
           <span>{isPositive ? '+' : ''}{change.toFixed(2)}</span>
         </div>
       </div>
+      {onSellClick && (
+        <button
+          onClick={() => onSellClick(id)}
+          className="p-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 transition-colors flex-shrink-0"
+          title="Sell this card"
+        >
+          <Tag size={16} />
+        </button>
+      )}
     </div>
   );
 }

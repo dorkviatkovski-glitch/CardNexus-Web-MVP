@@ -39,6 +39,11 @@ model CollectionItem {
   image_url      String?
   created_at     DateTime @default(now()) @db.Timestamptz(6)
 
+  // Price comparison fields
+  market_avg_price  Decimal? @db.Decimal(10, 2)
+  last_price_check  DateTime? @db.Timestamptz(6)
+  price_source      String?
+
   @@map("CollectionItem")
 }
 
@@ -64,12 +69,14 @@ model SharedCollectionMember {
 }
 
 model Listing {
-  id           String   @id @default(dbgenerated("gen_random_uuid()"))
-  item_id      String   @unique
-  seller_id    String
-  asking_price Decimal  @db.Decimal(10, 2)
-  status       String   @default("active")
-  created_at   DateTime @default(now()) @db.Timestamptz(6)
+  id              String   @id @default(dbgenerated("gen_random_uuid()"))
+  item_id         String   @unique
+  seller_id       String
+  asking_price    Decimal  @db.Decimal(10, 2)
+  status          String   @default("active")
+  market_avg_price Decimal? @db.Decimal(10, 2)
+  price_source    String?
+  created_at      DateTime @default(now()) @db.Timestamptz(6)
 
   @@map("Listing")
 }

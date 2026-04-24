@@ -1,0 +1,95 @@
+{
+  "project": "CardNexus",
+  "branchName": "ralph/price-comparison-marketplace",
+  "description": "Price Comparison + Marketplace Listing - Compare card prices before listing from collection",
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Add marketplace listing table to DB",
+      "description": "Create the marketplace listing infrastructure with price comparison fields",
+      "acceptanceCriteria": [
+        "Add Listing table with fields: id, item_id, seller_id, asking_price, status, market_avg_price, price_source, created_at",
+        "Add price comparison fields to CollectionItem: market_avg_price, last_price_check, price_source",
+        "Generate Prisma client",
+        "Typecheck passes"
+      ],
+      "priority": 1,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-002",
+      "title": "Create mock price comparison service",
+      "description": "Build a mock pricing engine that returns simulated market data for any card",
+      "acceptanceCriteria": [
+        "Create src/lib/pricing/mockPriceService.ts",
+        "Function getMarketComparison(cardName, cardSet, condition) returns: avg, min, max, trend",
+        "Deterministic pricing based on card name hash (same card = same price)",
+        "Typecheck passes"
+      ],
+      "priority": 2,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-003",
+      "title": "Add Sell button to collection cards",
+      "description": "Add a 'Sell' action to each card in the collection dashboard",
+      "acceptanceCriteria": [
+        "Add Sell button to AssetCard component",
+        "Button only shows for authenticated card owners",
+        "Click opens price comparison modal",
+        "Typecheck passes"
+      ],
+      "priority": 3,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-004",
+      "title": "Build Price Comparison Modal",
+      "description": "Create modal showing user's card vs market prices with listing form",
+      "acceptanceCriteria": [
+        "Modal shows card details (name, set, condition, user's purchase price)",
+        "Displays market comparison: avg, min, max, trend (up/down arrow)",
+        "Shows recommended listing price (market avg + 10%)",
+        "Input field for custom asking price",
+        "Submit creates listing in DB",
+        "Typecheck passes"
+      ],
+      "priority": 4,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-005",
+      "title": "Show active listings in Marketplace",
+      "description": "Update Marketplace page to show real listings from DB",
+      "acceptanceCriteria": [
+        "Fetch active listings from Listing table",
+        "Display card name, seller, asking price, condition",
+        "Empty state when no listings",
+        "Typecheck passes",
+        "Verify in browser"
+      ],
+      "priority": 5,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-006",
+      "title": "Add My Listings section to Profile",
+      "description": "Show user's own marketplace listings in Profile page",
+      "acceptanceCriteria": [
+        "Fetch listings where seller_id = current user",
+        "Show status (active/sold/withdrawn)",
+        "Allow withdraw/delete listing",
+        "Typecheck passes",
+        "Verify in browser"
+      ],
+      "priority": 6,
+      "passes": true,
+      "notes": ""
+    }
+  ]
+}

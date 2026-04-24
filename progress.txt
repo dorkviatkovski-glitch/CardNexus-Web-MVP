@@ -1,0 +1,65 @@
+# Ralph Progress Log
+Started: 2025-04-24
+Project: CardNexus - Price Comparison + Marketplace Listing
+---
+
+## Codebase Patterns
+- Use server components for data fetching, client components for interactivity
+- Keep Server Actions in src/lib/actions/ with domain separation
+- Mock services should be pure functions (no side effects)
+- Modal components should be client components with 'use client'
+---
+
+## Iteration 1 — US-001: Add marketplace listing table to DB
+- What was done:
+  - Updated Prisma schema with new fields on CollectionItem (market_avg_price, last_price_check, price_source)
+  - Created Listing table with fields: id, item_id, seller_id, asking_price, status, market_avg_price, price_source, created_at
+  - Created supabase-schema-marketplace.sql for manual DB migration
+  - Generated Prisma client successfully
+- Files affected:
+  - prisma/schema.prisma
+  - supabase-schema-marketplace.sql
+- Learnings for next cycles:
+  - Always generate Prisma client after schema changes before building
+  - Supabase needs manual SQL execution for new tables
+---
+
+## Iteration 2 — US-002: Create mock price comparison service
+- What was done:
+  - Created src/lib/pricing/mockPriceService.ts with deterministic pricing
+  - getMarketComparison() returns avg/min/max/trend based on card hash
+  - getRecommendedPrice() suggests listing price with premium
+  - Condition multipliers: PSA 10 = 3.5x, PSA 9 = 2.5x, NM = 1.8x
+  - TypeScript check passes
+- Files affected:
+  - src/lib/pricing/mockPriceService.ts
+- Learnings for next cycles:
+  - Hash-based pricing ensures same card always shows same market price
+  - Keep pricing service pure (no DB calls, no side effects)
+  - Export interfaces for type safety across components
+---
+
+## Iteration 3 — US-003 + US-004 + US-005 + US-006: Sell Button + Price Comparison Modal + Marketplace + Profile Listings
+- What was done:
+  - Updated AssetCard with Sell button (tag icon) and onSellClick prop
+  - Created PriceComparisonModal with full market comparison UI
+  - Modal shows: card details, market avg/min/max, trend, recommended price
+  - Form for asking price with quick-select recommended price
+  - Server Actions: createListing, getActiveListings, getMyListings, withdrawListing
+  - Updated Marketplace page to show real active listings
+  - Updated Profile page with My Listings section + withdraw button
+  - Collection page uses CollectionClient wrapper for modal state
+- Files affected:
+  - src/components/AssetCard.tsx
+  - src/components/PriceComparisonModal.tsx
+  - src/app/collection/CollectionClient.tsx
+  - src/app/collection/page.tsx
+  - src/app/marketplace/page.tsx
+  - src/app/profile/page.tsx
+  - src/lib/actions/marketplace.ts
+- Learnings for next cycles:
+  - Client wrapper components (CollectionClient) bridge server data with client state
+  - Server Actions can import pure functions (mockPriceService) for server-side logic
+  - RevalidatePath is needed after DB mutations to refresh UI
+  - Modals should be fixed position with backdrop-blur for premium feel
+---
