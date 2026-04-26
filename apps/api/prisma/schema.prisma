@@ -1,0 +1,95 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String             @id @default(cuid())
+  email       String             @unique
+  name        String
+  passwordHash String
+  collections Collection[]
+  memberships CollectionMember[]
+  listings    MarketplaceListing[]
+  createdAt   DateTime           @default(now())
+}
+
+model Collection {
+  id          String             @id @default(cuid())
+  name        String
+  ownerId     String
+  owner       User               @relation(fields: [ownerId], references: [id])
+  cards       CollectionCard[]
+  members     CollectionMember[]
+  createdAt   DateTime           @default(now())
+}
+
+model Card {
+  id          String             @id @default(cuid())
+  name        String
+  set         String
+  rarity      String
+  condition   String
+  imageUrl    String?
+  collectionCards CollectionCard[]
+  pricingSnapshots PricingSnapshot[]
+}
+
+model CollectionCard {
+  id          String             @id @default(cuid())
+  collectionId String
+  cardId      String
+  quantity    Int                @default(1)
+  collection  Collection         @relation(fields: [collectionId], references: [id])
+  card        Card               @relation(fields: [cardId], references: [id])
+  listings    MarketplaceListing[]
+  pricingSnapshots PricingSnapshot[]
+}
+
+model CollectionMember {
+  id          String             @id @default(cuid())
+  collectionId String
+  userId      String
+  role        MemberRole         @default(VIEWER)
+  collection  Collection         @relation(fields: [collectionId], references: [id])
+  user        User               @relation(fields: [userId], references: [id])
+
+  @@unique([collectionId, userId])
+}
+
+model MarketplaceListing {
+  id              String         @id @default(cuid())
+  collectionCardId String
+  sellerId        String
+  price           Decimal
+  status          ListingStatus  @default(ACTIVE)
+  createdAt       DateTime       @default(now())
+  collectionCard  CollectionCard @relation(fields: [collectionCardId], references: [id])
+  seller          User           @relation(fields: [sellerId], references: [id])
+}
+
+model PricingSnapshot {
+  id              String         @id @default(cuid())
+  cardId          String?
+  collectionCardId String?
+  value           Decimal
+  currency        String         @default("USD")
+  capturedAt      DateTime       @default(now())
+  card            Card?          @relation(fields: [cardId], references: [id])
+  collectionCard  CollectionCard? @relation(fields: [collectionCardId], references: [id])
+}
+
+enum MemberRole {
+  OWNER
+  EDITOR
+  VIEWER
+}
+
+enum ListingStatus {
+  ACTIVE
+  SOLD
+}
