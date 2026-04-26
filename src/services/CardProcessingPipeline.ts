@@ -1,1 +1,12 @@
-export class CardProcessingPipeline { constructor(private recognition: any) {} async run(id: string, url: string) { return await this.recognition.identify(url); } }
+interface CardRecognitionLike {
+  identify(url: string): Promise<{ name: string; set: string }>;
+}
+
+export class CardProcessingPipeline {
+  constructor(private recognition: CardRecognitionLike) {}
+
+  async run(id: string, url: string) {
+    void id;
+    return await this.recognition.identify(url);
+  }
+}
