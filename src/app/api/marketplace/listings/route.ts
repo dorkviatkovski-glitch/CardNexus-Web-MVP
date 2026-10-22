@@ -6,6 +6,10 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const body = await request.json();
-  return NextResponse.json(MarketplaceController.createListing(body), { status: 201 });
+  try {
+    const body = await request.json();
+    return NextResponse.json(MarketplaceController.createListing(body), { status: 201 });
+  } catch (error) {
+    return NextResponse.json({ message: (error as Error).message || "Unable to create listing" }, { status: 400 });
+  }
 }

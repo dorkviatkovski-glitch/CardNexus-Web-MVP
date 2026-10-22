@@ -46,3 +46,7 @@ Then open `http://localhost:3000/login`.
 
 - Sprint 1 uses mock token/session handling in the browser (`localStorage`) and in-memory backend state.
 - The backend modular layout is designed so production auth, Prisma persistence, and external pricing providers can be swapped in without route redesign.
+
+## Tests
+
+Run `npm ci` and `npm test` for critical auth, UI route protection, valuation and listing regression checks. `npm run test:watch` enables watch mode. See [testing scope and remaining contracts](docs/testing.md).

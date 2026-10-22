@@ -4,7 +4,7 @@ import type { PricingProvider, CollectionValuationResult } from "./types";
 export class MockPricingProvider implements PricingProvider {
   async getCardValue(card: { id: string }): Promise<number> {
     const latestSnapshot = [...db.pricingSnapshots]
-      .reverse()
+      .sort((a, b) => Date.parse(b.capturedAt) - Date.parse(a.capturedAt))
       .find((snapshot) => snapshot.cardId === card.id);
 
     return latestSnapshot?.value ?? 15;

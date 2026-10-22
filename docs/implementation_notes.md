@@ -24,7 +24,8 @@
 
 3. **Auth as replaceable mock**
    - Browser stores token in localStorage (`cardnexus_token`) for routing behavior.
-   - Service returns a simple base64 payload token shape, enabling later JWT migration.
+   - Service returns an unsigned base64 payload token shape; this is demo routing state, not verified server authentication.
+   - Passwords now use salted scrypt hashes in a private in-memory credential map.
 
 4. **Shared type package for cross-layer consistency**
    - `@cardnexus/types` is used by backend and frontend interfaces where practical.
@@ -41,7 +42,7 @@
 - Persistent database integration using Prisma Client and migrations.
 - Authorization middleware and role checks for shared collection membership APIs.
 - Input validation (zod/class-validator) and centralized error handling.
-- Unit/integration/e2e tests.
+- Browser end-to-end tests (critical unit, route integration and React routing tests are now in place; see `docs/testing.md`).
 - Observability (request tracing, structured logs, metrics).
 
 ## Next sprint recommendations

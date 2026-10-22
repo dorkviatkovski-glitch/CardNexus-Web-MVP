@@ -1,3 +1,4 @@
+import { hashPassword } from "../modules/auth/password";
 import type {
   Card,
   Collection,
@@ -24,6 +25,7 @@ export interface PricingSnapshot {
 
 export const db: {
   users: User[];
+  passwordHashes: Record<string, string>;
   collections: Collection[];
   cards: Card[];
   collectionCards: CollectionCard[];
@@ -31,6 +33,7 @@ export const db: {
   marketplaceListings: MarketplaceListing[];
   pricingSnapshots: PricingSnapshot[];
 } = {
+  passwordHashes: { "user-1": hashPassword("demo-password") },
   users: [
     {
       id: "user-1",
